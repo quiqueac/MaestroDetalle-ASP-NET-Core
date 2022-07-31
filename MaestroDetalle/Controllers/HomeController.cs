@@ -6,11 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MaestroDetalle.Models;
 using System.Xml.Linq;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace MaestroDetalle.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly string cadenaSQL;
+
+        public HomeController(IConfiguration config)
+        {
+            cadenaSQL = config.GetConnectionString("CadenaSQL");
+        }
         public IActionResult Index()
         {
             return View();
@@ -38,7 +47,18 @@ namespace MaestroDetalle.Controllers
             }
 
             venta.Add(oDetalleVenta);
-            return Json(true);
+
+            using (SqlConnection conexion = new SqlConnection(cadenaSQL))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand("sp_guardarVenta", conexion);
+                cmd.Parameters.Add("venta_xml", SqlDbType.Xml).Value = venta.ToString();
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.ExecuteNonQuery();
+            }
+
+            return Json(new { respuesta = true });
         }
 
         public IActionResult About()
