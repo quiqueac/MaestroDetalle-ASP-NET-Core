@@ -104,6 +104,17 @@
             }
 
             console.log(venta);
+
+            jQuery.ajax({
+                url: "@Url.Action("GuardarVenta","Home")",
+                type: "POST",
+                data: JSON.stringify(venta),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    console.log(data)
+                }
+            })
         })
     </script>
 }
