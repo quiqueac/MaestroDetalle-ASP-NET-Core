@@ -79,5 +79,31 @@
                 )
             )
         })
+
+        $("#btnTerminar").on("click", function () {
+            var detalle_venta = []
+            var total = 0
+
+            $("#tbProducto > tbody > tr").each(function (index, tr) {
+                detalle_venta.push(
+                    {
+                        Producto: $(tr).find("td:eq(0)").text(),
+                        Precio: parseFloat($(tr).find("td:eq(1)").text()),
+                        Cantidad: parseInt($(tr).find("td:eq(2)").text()),
+                        Total: parseFloat($(tr).find("td:eq(3)").text())
+                    }
+                )
+                total = total + parseFloat($(tr).find("td:eq(3)").text());
+            })
+
+            var venta = {
+                NumeroDocumento: $("#txtnumerodocumento").val(),
+                RazonSocial: $("#txtrazonsocial").val(),
+                Total: total,
+                lstDetalleVenta: detalle_venta
+            }
+
+            console.log(venta);
+        })
     </script>
 }
